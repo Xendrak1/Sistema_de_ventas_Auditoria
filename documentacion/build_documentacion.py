@@ -53,6 +53,119 @@ RISK_ROWS = [
     ["Sistema web y servidor", "Perdida de disponibilidad", "Ausencia de procedimiento de respaldo", "Alto", "Baja", "Medio", "Copias periodicas de la base SQLite y del codigo fuente versionado."],
 ]
 
+SPANISH_REPLACEMENTS = {
+    "Auditoria": "Auditoría",
+    "auditoria": "auditoría",
+    "Indice": "Índice",
+    "indice": "índice",
+    "Gestion": "Gestión",
+    "gestion": "gestión",
+    "Introduccion": "Introducción",
+    "introduccion": "introducción",
+    "Fundamentacion": "Fundamentación",
+    "fundamentacion": "fundamentación",
+    "Descripcion": "Descripción",
+    "descripcion": "descripción",
+    "Analisis": "Análisis",
+    "analisis": "análisis",
+    "Politica": "Política",
+    "politica": "política",
+    "Contrasenas": "Contraseñas",
+    "contrasenas": "contraseñas",
+    "Codigo": "Código",
+    "codigo": "código",
+    "academico": "académico",
+    "academica": "académica",
+    "tecnico": "técnico",
+    "tecnica": "técnica",
+    "teorica": "teórica",
+    "Teorica": "Teórica",
+    "Catalogo": "Catálogo",
+    "catalogo": "catálogo",
+    "aplicacion": "aplicación",
+    "Aplicacion": "Aplicación",
+    "autenticacion": "autenticación",
+    "Autenticacion": "Autenticación",
+    "sesion": "sesión",
+    "Sesion": "Sesión",
+    "informacion": "información",
+    "Informacion": "Información",
+    "validacion": "validación",
+    "Validacion": "Validación",
+    "direccion": "dirección",
+    "Direccion": "Dirección",
+    "Direcciónes": "Direcciones",
+    "maquina": "máquina",
+    "maquinas": "máquinas",
+    "tambien": "también",
+    "Tambien": "También",
+    "tecnologia": "tecnología",
+    "Tecnologia": "Tecnología",
+    "deteccion": "detección",
+    "Deteccion": "Detección",
+    "resolucion": "resolución",
+    "Resolucion": "Resolución",
+    "recomendacion": "recomendación",
+    "Recomendacion": "Recomendación",
+    "exposicion": "exposición",
+    "Exposicion": "Exposición",
+    "produccion": "producción",
+    "Produccion": "Producción",
+    "publicacion": "publicación",
+    "unicamente": "únicamente",
+    "despues": "después",
+    "titulos": "títulos",
+    "subtitulos": "subtítulos",
+    "tamano": "tamaño",
+    "Tamano": "Tamaño",
+    "pagina": "página",
+    "Pagina": "Página",
+    "modulo": "módulo",
+    "Modulo": "Módulo",
+    "modulos": "módulos",
+    "basico": "básico",
+    "basicos": "básicos",
+    "debil": "débil",
+    "debiles": "débiles",
+    "critico": "crítico",
+    "criticos": "críticos",
+    "parametro": "parámetro",
+    "Parametro": "Parámetro",
+    "busqueda": "búsqueda",
+    "Busqueda": "Búsqueda",
+    "podria": "podría",
+    "podrian": "podrían",
+    "ejecutandose": "ejecutándose",
+    "valida": "válida",
+    "validas": "válidas",
+    "logica": "lógica",
+    "especificos": "específicos",
+    "disenado": "diseñado",
+    "prediseńadas": "prediseñadas",
+    "prediseÃ±adas": "prediseñadas",
+    "Sistemás": "Sistemas",
+    "sistemás": "sistemas",
+    "Sistema_de_ventas_Auditoría": "Sistema_de_ventas_Auditoria",
+}
+
+
+def polish_text(text):
+    for old, new in SPANISH_REPLACEMENTS.items():
+        text = text.replace(old, new)
+    return text
+
+
+def polish_document(doc):
+    for paragraph in doc.paragraphs:
+        for run in paragraph.runs:
+            run.text = polish_text(run.text)
+    for table in doc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for paragraph in cell.paragraphs:
+                    for run in paragraph.runs:
+                        run.text = polish_text(run.text)
+
 
 def set_cell_text(cell, text, bold=False):
     cell.text = ""
@@ -203,17 +316,18 @@ def add_front_matter(doc):
     add_paragraph(doc, "Actualizar este indice desde Microsoft Word mediante Referencias > Tabla de contenido, despues de revisar los titulos y subtitulos del documento.")
     doc.add_heading("Indice de tablas", level=1)
     tables = [
-        "Tabla 1. Herramientas utilizadas en el proyecto.",
-        "Tabla 2. Rutas principales del sistema web.",
-        "Tabla 3. Tablas principales de la base de datos SQLite.",
-        "Tabla 4. Activos evaluados.",
-        "Tabla 5. Amenazas del sistema web y servidor.",
-        "Tabla 6. Vulnerabilidades identificadas.",
-        "Tabla 7. Matriz de analisis de riesgos.",
-        "Tabla 8. Controles recomendados.",
-        "Tabla 9. Resumen de evidencias integradas al informe.",
-        "Tabla 10. Interpretacion de puertos y servicios detectados con Nmap.",
-        "Tabla 11. Relacion entre fallas prediseñadas, evidencia y control propuesto.",
+        "Tabla 1. Rutas principales del sistema web.",
+        "Tabla 2. Tablas principales de la base de datos SQLite.",
+        "Tabla 3. Herramientas utilizadas en el proyecto.",
+        "Tabla 4. Resumen de evidencias integradas al informe.",
+        "Tabla 5. Interpretación de puertos y servicios detectados con Nmap.",
+        "Tabla 6. Interpretación de hallazgos detectados por Nessus.",
+        "Tabla 7. Relación entre fallas prediseñadas, evidencia y control propuesto.",
+        "Tabla 8. Activos evaluados.",
+        "Tabla 9. Amenazas del sistema web y servidor.",
+        "Tabla 10. Vulnerabilidades identificadas.",
+        "Tabla 11. Matriz de análisis de riesgos.",
+        "Tabla 12. Controles recomendados.",
     ]
     for item in tables:
         add_bullet(doc, item)
@@ -254,7 +368,7 @@ def add_matrix_table(doc, rows):
         for i, value in enumerate(row):
             set_cell_text(cells[i], value)
     style_table(table)
-    add_caption(doc, "Tabla 7. Matriz de analisis de riesgos.")
+    add_caption(doc, "Tabla 11. Matriz de analisis de riesgos.")
 
 
 def add_tool_table(doc):
@@ -276,7 +390,7 @@ def add_tool_table(doc):
         set_cell_text(cells[0], item[0])
         set_cell_text(cells[1], item[1])
     style_table(table)
-    add_caption(doc, "Tabla 1. Herramientas utilizadas en el proyecto.")
+    add_caption(doc, "Tabla 3. Herramientas utilizadas en el proyecto.")
 
 
 def add_evidence_summary_table(doc):
@@ -296,34 +410,53 @@ def add_evidence_summary_table(doc):
         for i, value in enumerate(row):
             set_cell_text(cells[i], value)
     style_table(table)
-    add_caption(doc, "Tabla 9. Resumen de evidencias integradas al informe.")
+    add_caption(doc, "Tabla 4. Resumen de evidencias integradas al informe.")
 
 
 def add_nmap_interpretation_table(doc):
     data = [
-        ["5000/TCP", "Abierto", "HTTP Werkzeug/Python", "Servicio web del sistema de ventas Flask.", "No usar servidor de desarrollo en produccion; controlar firewall."],
-        ["5355/TCP", "Abierto", "LLMNR / systemd-resolved", "Servicio de resolucion de nombres local del sistema operativo.", "Deshabilitar si no es necesario para reducir superficie de ataque."],
-        ["/login", "Ruta detectada", "HTTP", "El sistema redirige al formulario de autenticacion.", "Mantener autenticacion y revisar controles de login."],
-        ["Ingreso - Sistema de Venta", "Titulo web", "Aplicacion Flask", "Nmap identifico el titulo de la pagina del sistema.", "Evitar exposicion innecesaria de tecnologia o entorno."],
+        ["5000/TCP", "Abierto", "HTTP Werkzeug/Python", "Es el sistema web de ventas publicado en Flask.", "Un atacante sabría dónde está la aplicación y qué tecnología usa para buscar fallas específicas.", "Mantener el puerto abierto solo durante la práctica y usar un servidor WSGI en un entorno real."],
+        ["5355/TCP", "Abierto", "LLMNR / systemd-resolved", "Servicio de resolución de nombres local del sistema operativo.", "Puede facilitar reconocimiento interno o ataques de suplantación en redes mal configuradas.", "Deshabilitar LLMNR si no es necesario para el laboratorio."],
+        ["/login", "Ruta detectada", "HTTP", "El sistema redirige al formulario de autenticación.", "Permite ubicar el punto principal de ataque contra credenciales y autenticación.", "Endurecer el login con bloqueo por intentos, validaciones y registro de eventos."],
+        ["Ingreso - Sistema de Venta", "Título web", "Aplicación Flask", "Nmap identificó el título de la página.", "Revela información útil para perfilar el sistema durante la fase de reconocimiento.", "Evitar información innecesaria sobre tecnología o entorno."],
     ]
-    table = doc.add_table(rows=1, cols=5)
-    for idx, header in enumerate(["Elemento", "Estado", "Servicio detectado", "Descripcion", "Recomendacion"]):
+    table = doc.add_table(rows=1, cols=6)
+    for idx, header in enumerate(["Elemento", "Estado", "Servicio", "Qué significa", "Cómo podría aprovecharse", "Control recomendado"]):
         set_cell_text(table.rows[0].cells[idx], header, True)
     for row in data:
         cells = table.add_row().cells
         for i, value in enumerate(row):
             set_cell_text(cells[i], value)
     style_table(table)
-    add_caption(doc, "Tabla 10. Interpretacion de puertos y servicios detectados con Nmap.")
+    add_caption(doc, "Tabla 5. Interpretación de puertos y servicios detectados con Nmap.")
+
+
+def add_nessus_findings_table(doc):
+    data = [
+        ["HTTP (Multiple Issues)", "Informativo", "Nessus agrupó observaciones del servicio HTTP expuesto.", "Puede orientar a un atacante sobre configuraciones web débiles o puntos que requieren revisión.", "Revisar cabeceras HTTP, cookies, métodos permitidos y configuración del servidor."],
+        ["Python Remote HTTP Detection", "Informativo", "Detectó que el servicio web está relacionado con Python.", "La tecnología detectada permite buscar vulnerabilidades o malas prácticas propias del stack Python/Flask.", "Ocultar información innecesaria y usar configuración de despliegue adecuada."],
+        ["Web Application Cookies Are Expired", "Informativo", "Se observaron cookies con expiración o manejo débil.", "Un manejo incorrecto de cookies puede afectar sesiones y autenticación si se combina con otras fallas.", "Configurar expiración, HttpOnly, SameSite y Secure cuando corresponda."],
+        ["ICMP Timestamp Request Remote Date Disclosure", "Bajo", "El servidor responde solicitudes ICMP timestamp.", "Puede ayudar a conocer información de tiempo del host y apoyar tareas de reconocimiento.", "Filtrar o deshabilitar respuestas ICMP timestamp si no son necesarias."],
+        ["Service / OS Detection", "Informativo", "Nessus identificó servicios y huellas del sistema.", "Ayuda a perfilar el servidor antes de intentar ataques más específicos.", "Reducir servicios expuestos y mantener el sistema actualizado."],
+    ]
+    table = doc.add_table(rows=1, cols=5)
+    for idx, header in enumerate(["Hallazgo de Nessus", "Nivel", "Qué indica", "Cómo podría aprovecharse", "Control recomendado"]):
+        set_cell_text(table.rows[0].cells[idx], header, True)
+    for row in data:
+        cells = table.add_row().cells
+        for i, value in enumerate(row):
+            set_cell_text(cells[i], value)
+    style_table(table)
+    add_caption(doc, "Tabla 6. Interpretación de hallazgos detectados por Nessus.")
 
 
 def add_manual_findings_table(doc):
     data = [
-        ["Credenciales debiles", "Ingreso con admin/admin123", "Alto", "Aplicar politica de contrasenas y bloqueo por intentos fallidos."],
-        ["SQL Injection", "Ingreso con payload ' OR '1'='1' --", "Alto", "Usar consultas parametrizadas y validacion de entradas."],
-        ["XSS reflejado", "Parametro q de busqueda ejecuta JavaScript", "Medio", "Escapar salidas HTML y aplicar Content Security Policy."],
-        ["XSS almacenado", "Descripcion de producto almacena script", "Alto", "Sanitizar contenido de usuario antes de guardar y mostrar."],
-        ["Contrasenas en texto plano", "Consulta SQLite muestra admin123 y ventas123", "Alto", "Guardar contrasenas con hash seguro como bcrypt o argon2."],
+        ["Credenciales débiles", "Ingreso con admin/admin123", "Alto", "Aplicar política de contraseñas y bloqueo por intentos fallidos."],
+        ["SQL Injection", "Ingreso con payload ' OR '1'='1' --", "Alto", "Usar consultas parametrizadas y validación de entradas."],
+        ["XSS reflejado", "Parámetro q de búsqueda ejecuta JavaScript", "Medio", "Escapar salidas HTML y aplicar Content Security Policy."],
+        ["XSS almacenado", "Descripción de producto almacena script", "Alto", "Sanitizar contenido de usuario antes de guardar y mostrar."],
+        ["Contraseñas en texto plano", "Consulta SQLite muestra admin123 y ventas123", "Alto", "Guardar contraseñas con hash seguro como bcrypt o argon2."],
         ["Servidor de desarrollo", "Werkzeug expuesto en puerto 5000", "Medio", "Usar Gunicorn/uWSGI con Nginx o Apache fuera del laboratorio."],
     ]
     table = doc.add_table(rows=1, cols=4)
@@ -334,7 +467,7 @@ def add_manual_findings_table(doc):
         for i, value in enumerate(row):
             set_cell_text(cells[i], value)
     style_table(table)
-    add_caption(doc, "Tabla 11. Relacion entre fallas prediseñadas, evidencia y control propuesto.")
+    add_caption(doc, "Tabla 7. Relación entre fallas prediseñadas, evidencia y control propuesto.")
 
 
 def add_image(doc, filename, caption):
@@ -364,13 +497,11 @@ def build_main_report():
     add_front_matter(doc)
 
     doc.add_heading("Introduccion", level=1)
-    add_paragraph(doc, "El presente informe documenta el desarrollo, despliegue y auditoria de seguridad de un sistema web de ventas implementado en Python mediante el framework Flask y ejecutado sobre un servidor Linux Fedora 39. El trabajo responde a la necesidad academica de contar con un software propio, con codigo fuente disponible, que permita demostrar un proceso de auditoria de seguridad desde una perspectiva tecnica y documental. Para ello, el sistema fue diseñado como una aplicacion funcional pero deliberadamente vulnerable, de modo que sea posible identificar fallas prediseñadas, analizarlas con herramientas de reconocimiento y evaluacion, y finalmente proponer controles de mitigacion.")
-    add_paragraph(doc, "El escenario de laboratorio se construyo utilizando maquinas virtuales. Fedora 39 cumple el rol de servidor auditado, ya que aloja el sistema web de ventas, la base de datos SQLite y el servicio Flask expuesto en el puerto 5000/TCP. Kali Linux cumple el rol de maquina auditora, desde donde se valida el acceso al sistema, se ejecutan comandos de reconocimiento con Nmap y se realizan pruebas manuales sobre la aplicacion. Nessus Essentials se utiliza para complementar el analisis mediante un escaneo automatizado de vulnerabilidades, configuraciones HTTP y servicios visibles en el servidor.")
-    add_paragraph(doc, "La separacion entre servidor y maquina auditora permite representar de manera mas realista un proceso de auditoria. En lugar de ejecutar todas las herramientas dentro del mismo servidor, el analisis se realiza desde una maquina externa conectada a la misma red de laboratorio. Esta arquitectura permite evidenciar que el sistema no solo funciona localmente en Fedora, sino que tambien es accesible desde otra maquina y, por tanto, expone una superficie de ataque que puede ser reconocida por herramientas de seguridad.")
-    add_paragraph(doc, "El sistema de ventas incluye modulos basicos de autenticacion, productos, clientes, ventas, reportes y busqueda. Aunque su complejidad funcional es moderada, contiene vulnerabilidades intencionales utiles para el aprendizaje: credenciales debiles, contrasenas almacenadas en texto plano, SQL Injection en el formulario de login y en la busqueda, XSS reflejado, XSS almacenado, ausencia de proteccion CSRF, uso de una clave de sesion debil y ejecucion en modo debug. Estas fallas permiten relacionar la parte practica del laboratorio con conceptos teoricos de seguridad de aplicaciones web.")
-    add_paragraph(doc, "El analisis no se limita a reportar hallazgos tecnicos. Tambien incluye la identificacion de amenazas, la descripcion de vulnerabilidades, una tabla de analisis de riesgos, controles recomendados para el sistema web y el servidor, y una politica de uso de contrasenas. De esta manera, el proyecto aborda tanto la dimension tecnica de la auditoria como la dimension administrativa solicitada en la materia, donde se espera generar documentos de soporte, controles, politicas y evidencias.")
-    add_paragraph(doc, "Es importante aclarar que el objetivo del proyecto no es publicar un sistema inseguro en internet ni simular un entorno productivo real. El despliegue se realiza unicamente en una red controlada de VirtualBox durante la practica y la presentacion. Esta decision reduce riesgos, permite ejecutar pruebas sin afectar terceros y facilita la documentacion ordenada de cada paso. Por tanto, las vulnerabilidades presentes deben entenderse como recursos didacticos incorporados para demostrar el proceso de auditoria, no como errores accidentales de un sistema destinado a produccion.")
-    add_paragraph(doc, "La documentacion presentada se organiza siguiendo un formato academico cercano a APA 7: margenes de 2.54 cm, tipografia Times New Roman, tamano 12 para el cuerpo del texto, titulos jerarquicos, tablas y figuras numeradas, y referencias bibliograficas al final. Las capturas integradas provienen del despliegue real y de las pruebas ejecutadas sobre el laboratorio, por lo que sirven como evidencia de que el sistema fue instalado, ejecutado, accedido desde Kali, analizado con Nmap y Nessus, y probado manualmente para validar las fallas prediseñadas.")
+    add_paragraph(doc, "Este informe presenta la auditoría de seguridad realizada a un sistema web de ventas desarrollado en Python con Flask y desplegado sobre Fedora 39. El proyecto fue construido como un laboratorio universitario: el sistema funciona, tiene código fuente propio y además incluye fallas prediseñadas para poder analizarlas, explicarlas y proponer controles de mejora.")
+    add_paragraph(doc, "El escenario se trabajó con dos máquinas virtuales. Fedora 39 actúa como servidor, porque ahí se ejecuta la aplicación y la base de datos SQLite. Kali Linux actúa como equipo auditor, desde donde se accede a la página, se ejecuta Nmap y se realizan pruebas manuales. Nessus complementa el trabajo con un escaneo automatizado del servidor y del servicio web expuesto.")
+    add_paragraph(doc, "La idea no fue publicar una aplicación vulnerable en internet, sino crear un ambiente controlado para aprender el proceso completo de una auditoría: desplegar un servicio, reconocer puertos, revisar hallazgos, comprobar vulnerabilidades, valorar riesgos y plantear controles. Por eso las pruebas se realizaron dentro de una red de laboratorio en VirtualBox.")
+    add_paragraph(doc, "El sistema incluye módulos de login, productos, clientes, ventas, reportes y búsqueda. Sus fallas principales son credenciales débiles, contraseñas en texto plano, SQL Injection, XSS reflejado, XSS almacenado, falta de CSRF y uso del servidor de desarrollo de Flask. Estas vulnerabilidades permiten relacionar la teoría de seguridad web con evidencias reales obtenidas durante la práctica.")
+    add_paragraph(doc, "Además del análisis técnico, el trabajo incluye una matriz de riesgos, recomendaciones, controles de seguridad y una política de contraseñas. De esta forma se cubre lo solicitado para la materia: código fuente, despliegue, auditoría del sistema, evidencias, análisis de riesgo y documentación de controles.")
 
     doc.add_heading("Fundamentacion teorica", level=1)
     add_paragraph(doc, "La seguridad de aplicaciones web busca proteger la confidencialidad, integridad y disponibilidad de los datos procesados por un sistema. OWASP identifica categorias de riesgo como control de acceso roto, fallas criptograficas e inyeccion, las cuales son relevantes para sistemas que gestionan usuarios, autenticacion y operaciones comerciales.")
@@ -423,7 +554,7 @@ def build_main_report():
         for i, value in enumerate(row):
             set_cell_text(cells[i], value)
     style_table(route_table)
-    add_caption(doc, "Tabla 2. Rutas principales del sistema web.")
+    add_caption(doc, "Tabla 1. Rutas principales del sistema web.")
 
     db_table = doc.add_table(rows=1, cols=3)
     for idx, header in enumerate(["Tabla", "Campos principales", "Uso"]):
@@ -438,7 +569,7 @@ def build_main_report():
         for i, value in enumerate(row):
             set_cell_text(cells[i], value)
     style_table(db_table)
-    add_caption(doc, "Tabla 3. Tablas principales de la base de datos SQLite.")
+    add_caption(doc, "Tabla 2. Tablas principales de la base de datos SQLite.")
 
     add_paragraph(doc, "Desde el punto de vista de auditoria, el sistema incluye vulnerabilidades intencionales: credenciales debiles, contrasenas en texto plano, SQL injection en login y busqueda, XSS reflejado, XSS almacenado, ausencia de CSRF, clave de sesion debil y modo debug activo. Estas fallas permiten justificar tecnicamente los controles propuestos.")
     add_image(doc, "figura-01-login.png", "Figura 1. Pantalla de inicio de sesion.")
@@ -531,8 +662,11 @@ def build_main_report():
         "El modulo de reportes presenta ventas por producto y control de stock. Esta evidencia muestra que el sistema cuenta con funcionalidad administrativa suficiente para justificar controles de acceso, integridad de datos y respaldo de informacion.",
     )
 
-    doc.add_heading("Evidencias del analisis con Nmap", level=2)
-    add_paragraph(doc, "El analisis con Nmap fue ejecutado desde Kali Linux hacia la direccion IP del servidor Fedora. Los resultados permiten identificar puertos abiertos, servicios, tecnologia del servidor web y rutas HTTP detectadas. En este caso, Nmap confirma que el sistema web esta publicado en el puerto 5000/TCP mediante Werkzeug/Python, lo cual corresponde al servidor de desarrollo utilizado por Flask.")
+    doc.add_heading("Análisis con Nmap", level=1)
+    add_paragraph(doc, "El análisis con Nmap se ejecutó desde Kali Linux hacia la IP del servidor Fedora. La finalidad fue confirmar qué servicios estaban abiertos y comprobar que el sistema de ventas realmente estaba publicado en la red de laboratorio.")
+    for command in ["nmap -sV -p 5000 192.168.56.103", "nmap -A 192.168.56.103", "nmap -p- 192.168.56.103"]:
+        add_paragraph(doc, command)
+    add_paragraph(doc, "El hallazgo más importante fue el puerto 5000/TCP abierto con un servicio HTTP Werkzeug/Python. Eso corresponde a la aplicación Flask del sistema de ventas. También apareció el puerto 5355/TCP, relacionado con LLMNR, un servicio de resolución de nombres local. Nmap no explota vulnerabilidades por sí solo en este caso, pero ayuda a descubrir qué está expuesto y por dónde podría empezar un atacante.")
     add_docx_evidence_image(
         doc,
         "evidencia_docx_07.png",
@@ -553,67 +687,49 @@ def build_main_report():
     )
     add_nmap_interpretation_table(doc)
 
-    doc.add_heading("Evidencia del analisis con Nessus", level=2)
-    add_paragraph(doc, "El escaneo con Nessus fue ejecutado sin autenticacion contra la IP del servidor Fedora. Este enfoque permite evaluar la superficie visible del servidor y del servicio web expuesto. Debido a que el sistema cuenta con login, las vulnerabilidades internas de la aplicacion fueron verificadas mediante pruebas manuales autenticadas, mientras que Nessus se utilizo para identificar configuraciones y hallazgos externos.")
+    doc.add_heading("Análisis con Nessus", level=1)
+    add_paragraph(doc, "El escaneo con Nessus se ejecutó sin autenticación contra el servidor Fedora. Esto significa que Nessus revisó lo que cualquier equipo de la red podía ver desde afuera: servicios abiertos, respuestas HTTP, detección de tecnologías y configuraciones generales. Las fallas internas de la aplicación, como SQL Injection o XSS dentro del sistema, se comprobaron aparte mediante pruebas manuales.")
     add_docx_evidence_image(
         doc,
         "evidencia_docx_18.png",
-        "Figura 15. Resultado de Nessus sin autenticacion.",
-        "La captura muestra hallazgos informativos y de baja severidad generados por Nessus, como deteccion HTTP, deteccion Python remota, informacion de sistema operativo, cookies expiradas y divulgacion de timestamp ICMP. Aunque no todos los hallazgos son criticos, sirven como evidencia de que el servidor fue escaneado y que el servicio web fue reconocido por una herramienta automatizada.",
+        "Figura 15. Resultado de Nessus sin autenticación.",
+        "La captura muestra hallazgos informativos y de baja severidad generados por Nessus, como detección HTTP, detección remota de Python, información del sistema operativo, cookies expiradas y divulgación de timestamp ICMP. Aunque no todos los hallazgos son críticos, sirven para entender qué información entrega el servidor cuando alguien lo analiza desde la red.",
     )
+    add_nessus_findings_table(doc)
 
-    doc.add_heading("Evidencias de pruebas manuales autenticadas", level=2)
-    add_paragraph(doc, "Las pruebas manuales se realizaron para validar fallas prediseñadas propias de la logica de la aplicacion. Este paso es necesario porque herramientas como Nessus pueden no detectar vulnerabilidades internas ubicadas detras del login o dependientes de formularios especificos. Por ello, las evidencias manuales complementan el escaneo automatizado.")
+    doc.add_heading("Pruebas manuales de vulnerabilidades prediseñadas", level=1)
+    add_paragraph(doc, "Las pruebas manuales se realizaron para validar fallas propias de la lógica de la aplicación. Este paso es necesario porque herramientas como Nessus no siempre detectan vulnerabilidades que están detrás del login o que dependen de formularios específicos. Aquí se comprobaron las fallas que fueron diseñadas intencionalmente para el proyecto.")
     add_docx_evidence_image(
         doc,
         "evidencia_docx_10.png",
         "Figura 16. Prueba de SQL Injection en login.",
-        "La captura muestra el uso del payload ' OR '1'='1' -- en el formulario de inicio de sesion. Esta prueba evidencia que el login concatena directamente entradas del usuario en una consulta SQL, permitiendo el ingreso sin credenciales validas. El riesgo asociado es alto porque compromete el control de acceso principal del sistema.",
+        "La captura muestra el uso del payload ' OR '1'='1' -- en el formulario de inicio de sesión. La prueba evidencia que el login concatena entradas del usuario dentro de una consulta SQL. Si esta falla existiera en un sistema real, una persona podría ingresar sin conocer una contraseña válida.",
     )
     add_docx_evidence_image(
         doc,
         "evidencia_docx_13.png",
         "Figura 17. Prueba de XSS reflejado.",
-        "La alerta en el navegador evidencia que la busqueda refleja entrada del usuario sin escape seguro. Esta vulnerabilidad podria permitir que un atacante ejecute JavaScript en el navegador de un usuario autenticado si logra inducirlo a visitar una URL manipulada.",
+        "La alerta en el navegador evidencia que la búsqueda refleja entrada del usuario sin escape seguro. En un caso real, esta falla podría usarse para ejecutar JavaScript en el navegador de un usuario si se le envía una URL manipulada.",
     )
     add_docx_evidence_image(
         doc,
         "evidencia_docx_16.png",
         "Figura 18. Registro de payload para XSS almacenado.",
-        "En esta captura se observa el registro de un producto cuya descripcion contiene un script. La prueba representa XSS almacenado porque el contenido malicioso se guarda en la base de datos y luego se muestra nuevamente en la interfaz.",
+        "En esta captura se observa el registro de un producto cuya descripción contiene un script. La prueba representa XSS almacenado porque el contenido malicioso se guarda en la base de datos y luego vuelve a mostrarse en la interfaz.",
     )
     add_docx_evidence_image(
         doc,
         "evidencia_docx_21.png",
-        "Figura 19. Ejecucion de XSS almacenado.",
-        "La alerta confirma que el script almacenado en la descripcion del producto se ejecuta al visualizar el modulo correspondiente. Este hallazgo tiene mayor impacto que un XSS reflejado porque permanece en el sistema hasta que el registro sea corregido o eliminado.",
+        "Figura 19. Ejecución de XSS almacenado.",
+        "La alerta confirma que el script almacenado en la descripción del producto se ejecuta al visualizar el módulo correspondiente. Este hallazgo tiene mayor impacto que un XSS reflejado porque permanece en el sistema hasta que el registro sea corregido o eliminado.",
     )
     add_docx_evidence_image(
         doc,
         "evidencia_docx_08.png",
-        "Figura 20. Contrasenas almacenadas en texto plano.",
-        "La consulta realizada sobre SQLite muestra usuarios y contrasenas directamente legibles, como admin123 y ventas123. Esta evidencia demuestra una falla critica de almacenamiento de credenciales, ya que cualquier exposicion de la base de datos comprometeria inmediatamente las cuentas del sistema.",
+        "Figura 20. Contraseñas almacenadas en texto plano.",
+        "La consulta realizada sobre SQLite muestra usuarios y contraseñas directamente legibles, como admin123 y ventas123. Esta evidencia demuestra una falla crítica de almacenamiento de credenciales: si alguien obtiene la base de datos, también obtiene las contraseñas.",
     )
     add_manual_findings_table(doc)
-
-    doc.add_heading("Analisis con Nmap", level=1)
-    add_paragraph(doc, "Nmap se utilizo desde Kali Linux para identificar puertos abiertos, servicios expuestos, versiones y rutas HTTP visibles en el servidor Fedora 39. El objetivo principal fue comprobar que el sistema web de ventas se encontraba publicado en el puerto 5000/TCP y que podia ser reconocido desde una maquina auditora externa.")
-    for command in ["nmap -sV -p 5000 IP_DEL_SERVIDOR", "nmap -A IP_DEL_SERVIDOR", "nmap -p- IP_DEL_SERVIDOR"]:
-        add_paragraph(doc, command)
-    add_paragraph(doc, "En las evidencias obtenidas se observa que Nmap detecto el puerto 5000/TCP abierto, ejecutando HTTP mediante Werkzeug httpd 3.1.8 sobre Python 3.12.0. Tambien se identifico la ruta /login y el titulo de la pagina de ingreso del sistema. En un escaneo adicional aparecio el puerto 5355/TCP, asociado a LLMNR. Posteriormente, desde Fedora se valido con herramientas locales que el puerto 5000 pertenecia al proceso python y que el puerto 5355 correspondia a systemd-resolved.")
-    add_paragraph(doc, "La interpretacion de estos resultados indica que el activo principal expuesto es el servicio web Flask. Aunque el uso del servidor de desarrollo Werkzeug es aceptable para un laboratorio academico temporal, no es recomendable para produccion. Por ello, el control propuesto consiste en mantener el servicio solo durante la presentacion, cerrar el puerto al finalizar y, en un entorno real, utilizar un servidor WSGI como Gunicorn o uWSGI detras de Nginx o Apache.")
-
-    doc.add_heading("Analisis con Nessus", level=1)
-    add_paragraph(doc, "Nessus Essentials se utilizo para ejecutar un escaneo Basic Network Scan contra la direccion IP del servidor Fedora. El escaneo fue realizado sin autenticacion, por lo que su alcance principal fue la superficie visible del servidor: puertos abiertos, servicios HTTP, deteccion de sistema, configuraciones generales y hallazgos informativos o de baja severidad.")
-    for step in [
-        "Crear un nuevo Basic Network Scan.",
-        "Definir como objetivo la IP del servidor Fedora.",
-        "Ejecutar el escaneo durante la presentacion o antes de ella.",
-        "Exportar el reporte en PDF o HTML.",
-        "Incluir capturas del resumen de hallazgos y de las vulnerabilidades mas relevantes.",
-    ]:
-        add_number(doc, step)
-    add_paragraph(doc, "El resultado observado incluyo detecciones como HTTP Multiple Issues, Python Remote HTTP Detection, OS Identification, Service Detection, Web Application Cookies Are Expired e ICMP Timestamp Request Remote Date Disclosure. Estos hallazgos son utiles para demostrar que Nessus reconocio el servicio web y el entorno del servidor. Sin embargo, vulnerabilidades internas como SQL Injection, XSS y contrasenas en texto plano no dependen unicamente de la configuracion del servidor, por lo que fueron comprobadas mediante pruebas manuales autenticadas.")
 
     doc.add_heading("Activos evaluados", level=1)
     table = doc.add_table(rows=1, cols=3)
@@ -629,7 +745,7 @@ def build_main_report():
         for i, value in enumerate(row):
             set_cell_text(cells[i], value)
     style_table(table)
-    add_caption(doc, "Tabla 4. Activos evaluados.")
+    add_caption(doc, "Tabla 8. Activos evaluados.")
 
     doc.add_heading("Amenazas del sistema web y servidor", level=1)
     table = doc.add_table(rows=1, cols=3)
@@ -646,7 +762,7 @@ def build_main_report():
         for i, value in enumerate(row):
             set_cell_text(cells[i], value)
     style_table(table)
-    add_caption(doc, "Tabla 5. Amenazas del sistema web y servidor.")
+    add_caption(doc, "Tabla 9. Amenazas del sistema web y servidor.")
 
     doc.add_heading("Vulnerabilidades del sistema web y servidor", level=1)
     table = doc.add_table(rows=1, cols=4)
@@ -664,7 +780,7 @@ def build_main_report():
         for i, value in enumerate(row):
             set_cell_text(cells[i], value)
     style_table(table)
-    add_caption(doc, "Tabla 6. Vulnerabilidades identificadas.")
+    add_caption(doc, "Tabla 10. Vulnerabilidades identificadas.")
 
     doc.add_heading("Tabla de analisis de riesgos", level=1)
     add_paragraph(doc, "La matriz de riesgos relaciona activos, amenazas, vulnerabilidades, impacto, probabilidad y controles. Para priorizar, se clasifica el riesgo como Critico, Alto, Medio o Bajo.")
@@ -687,7 +803,7 @@ def build_main_report():
         for i, value in enumerate(row):
             set_cell_text(cells[i], value)
     style_table(table)
-    add_caption(doc, "Tabla 8. Controles recomendados.")
+    add_caption(doc, "Tabla 12. Controles recomendados.")
 
     doc.add_heading("Conclusiones", level=1)
     conclusions = [
@@ -704,6 +820,7 @@ def build_main_report():
     for source in SOURCES:
         add_paragraph(doc, source)
 
+    polish_document(doc)
     path = OUT / "Informe_Principal_Auditoria.docx"
     doc.save(path)
     return path
@@ -766,6 +883,7 @@ def build_password_policy():
     for source in [SOURCES[3], SOURCES[5]]:
         add_paragraph(doc, source)
 
+    polish_document(doc)
     path = OUT / "Politica_Uso_Contrasenas.docx"
     doc.save(path)
     return path
@@ -841,6 +959,7 @@ def build_controls_doc():
     doc.add_heading("Conclusiones", level=1)
     add_paragraph(doc, "Los controles establecidos permiten reducir riesgos basicos del sistema web y del servidor, ademas de organizar la demostracion de auditoria como un laboratorio temporal, controlado y documentado.")
 
+    polish_document(doc)
     path = OUT / "Establecimiento_Controles.docx"
     doc.save(path)
     return path
