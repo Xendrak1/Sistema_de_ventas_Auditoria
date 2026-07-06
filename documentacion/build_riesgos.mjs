@@ -7,20 +7,20 @@ const outDir = path.join(root, "documentacion", "entregables");
 await fs.mkdir(outDir, { recursive: true });
 
 const risks = [
-  ["Sistema web", "Acceso no autorizado", "Credenciales debiles y contrasenas predecibles", 5, 5, "Critico", "Politica de contrasenas, bloqueo por intentos fallidos y revision de usuarios."],
-  ["Sistema web", "Ingreso sin autenticacion valida", "SQL injection en formulario de login", 5, 3, "Alto", "Consultas parametrizadas, validacion de entradas y pruebas de seguridad."],
-  ["Sistema web", "Robo de sesion o ejecucion de scripts", "XSS reflejado en busqueda", 3, 3, "Medio", "Escapar salidas HTML, sanitizar entradas y aplicar Content Security Policy."],
-  ["Sistema web", "Ejecucion persistente de JavaScript", "XSS almacenado en descripcion de productos", 5, 3, "Alto", "No usar contenido de usuario como seguro, sanitizar y validar campos."],
-  ["Base de datos", "Exposicion de credenciales", "Contrasenas almacenadas en texto plano", 5, 3, "Alto", "Hash seguro con bcrypt o argon2 y sal unica por usuario."],
-  ["Servidor Fedora", "Enumeracion de servicios", "Puerto 5000 expuesto durante el laboratorio", 3, 5, "Alto", "Firewall, apertura temporal del puerto y cierre al finalizar la presentacion."],
-  ["Servidor Fedora", "Resolucion de nombres innecesaria", "Puerto 5355/LLMNR abierto", 3, 3, "Medio", "Deshabilitar LLMNR si no es requerido para el laboratorio."],
-  ["Aplicacion Flask", "Exposicion de informacion tecnica", "Modo debug activo", 5, 3, "Alto", "Desactivar debug fuera del laboratorio y usar servidor WSGI para produccion."],
-  ["Aplicacion Flask", "Uso de servidor no productivo", "Werkzeug Development Server expuesto", 3, 5, "Alto", "Usar Gunicorn/uWSGI detras de Nginx o Apache en entornos reales."],
-  ["Servidor Fedora", "Divulgacion de informacion temporal", "ICMP Timestamp Request habilitado", 2, 3, "Bajo", "Filtrar o deshabilitar respuestas ICMP timestamp si no son necesarias."],
-  ["Sistema web", "Debilidad en manejo de sesion", "Cookies expiradas o sin endurecimiento suficiente", 3, 3, "Medio", "Configurar atributos Secure, HttpOnly, SameSite y expiracion adecuada."],
+  ["Sistema web", "Acceso no autorizado", "Credenciales débiles y contraseñas predecibles", 5, 5, "Crítico", "Política de contraseñas, bloqueo por intentos fallidos y revisión de usuarios."],
+  ["Sistema web", "Ingreso sin autenticación válida", "SQL Injection en formulario de login", 5, 3, "Alto", "Consultas parametrizadas, validación de entradas y pruebas de seguridad."],
+  ["Sistema web", "Robo de sesión o ejecución de scripts", "XSS reflejado en búsqueda", 3, 3, "Medio", "Escapar salidas HTML, sanitizar entradas y aplicar Content Security Policy."],
+  ["Sistema web", "Ejecución persistente de JavaScript", "XSS almacenado en descripción de productos", 5, 3, "Alto", "No usar contenido del usuario como HTML seguro; sanitizar y validar campos."],
+  ["Base de datos", "Exposición de credenciales", "Contraseñas almacenadas en texto plano", 5, 3, "Alto", "Hash seguro con bcrypt o argon2 y sal única por usuario."],
+  ["Servidor Fedora", "Enumeración de servicios", "Puerto 5000 expuesto durante el laboratorio", 3, 5, "Alto", "Firewall, apertura temporal del puerto y cierre al finalizar la presentación."],
+  ["Servidor Fedora", "Resolución de nombres innecesaria", "Puerto 5355/LLMNR abierto", 3, 3, "Medio", "Deshabilitar LLMNR si no es requerido para el laboratorio."],
+  ["Aplicación Flask", "Exposición de información técnica", "Modo debug activo", 5, 3, "Alto", "Desactivar debug fuera del laboratorio y usar servidor WSGI para producción."],
+  ["Aplicación Flask", "Uso de servidor no productivo", "Werkzeug Development Server expuesto", 3, 5, "Alto", "Usar Gunicorn/uWSGI detrás de Nginx o Apache en entornos reales."],
+  ["Servidor Fedora", "Divulgación de información temporal", "ICMP Timestamp Request habilitado", 2, 3, "Bajo", "Filtrar o deshabilitar respuestas ICMP timestamp si no son necesarias."],
+  ["Sistema web", "Debilidad en manejo de sesión", "Cookies expiradas o sin endurecimiento suficiente", 3, 3, "Medio", "Configurar atributos Secure, HttpOnly, SameSite y expiración adecuada."],
   ["Sistema web", "Acciones no autorizadas", "Formularios sin token CSRF", 3, 3, "Medio", "Implementar CSRF tokens en formularios y validar origen de solicitudes."],
-  ["Servidor Fedora", "Uso indebido de privilegios", "Usuarios o servicios con permisos excesivos", 5, 3, "Alto", "Principio de minimo privilegio y cuentas separadas para administracion."],
-  ["Sistema web y servidor", "Perdida de disponibilidad", "Ausencia de procedimiento de respaldo", 5, 2, "Medio", "Copias periodicas de la base SQLite y del codigo fuente versionado."],
+  ["Servidor Fedora", "Uso indebido de privilegios", "Usuarios o servicios con permisos excesivos", 5, 3, "Alto", "Principio de mínimo privilegio y cuentas separadas para administración."],
+  ["Sistema web y servidor", "Pérdida de disponibilidad", "Ausencia de procedimiento de respaldo", 5, 2, "Medio", "Copias periódicas de la base SQLite y del código fuente versionado."],
 ];
 
 const workbook = Workbook.create();
@@ -28,7 +28,7 @@ const sheet = workbook.worksheets.add("Matriz de Riesgos");
 sheet.showGridLines = false;
 
 sheet.getRange("A1:H1").merge();
-sheet.getRange("A1").values = [["Matriz de Analisis de Riesgos - Sistema de Ventas"]];
+sheet.getRange("A1").values = [["Matriz de Análisis de Riesgos - Sistema de Ventas"]];
 sheet.getRange("A1").format = {
   fill: "#0F4C5C",
   font: { bold: true, color: "#FFFFFF", size: 14 },
@@ -82,15 +82,15 @@ summary.getRange("A1").format = {
   font: { bold: true, color: "#FFFFFF", size: 14 },
   horizontalAlignment: "center",
 };
-summary.getRange("A3:D3").values = [["Nivel", "Cantidad", "Interpretacion", "Accion sugerida"]];
+summary.getRange("A3:D3").values = [["Nivel", "Cantidad", "Interpretación", "Acción sugerida"]];
 summary.getRange("A3:D3").format = {
   fill: "#E8EEF5",
   font: { bold: true, color: "#0B2545" },
   borders: { preset: "all", style: "thin", color: "#C8D1DC" },
 };
 summary.getRange("A4:D7").values = [
-  ["Critico", null, "Requiere atencion inmediata", "Corregir antes de exponer el sistema."],
-  ["Alto", null, "Riesgo importante", "Planificar mitigacion prioritaria."],
+  ["Crítico", null, "Requiere atención inmediata", "Corregir antes de exponer el sistema."],
+  ["Alto", null, "Riesgo importante", "Planificar mitigación prioritaria."],
   ["Medio", null, "Riesgo controlable", "Aplicar controles y monitorear."],
   ["Bajo", null, "Riesgo aceptable", "Mantener seguimiento."],
 ];
@@ -108,6 +108,37 @@ summary.getRange("A:D").format.font = { name: "Calibri", size: 11 };
 summary.getRange("A:A").format.columnWidth = 16;
 summary.getRange("B:B").format.columnWidth = 12;
 summary.getRange("C:D").format.columnWidth = 32;
+
+const criteria = workbook.worksheets.add("Criterios");
+criteria.showGridLines = false;
+criteria.getRange("A1:C1").merge();
+criteria.getRange("A1").values = [["Criterios usados para impacto y probabilidad"]];
+criteria.getRange("A1").format = {
+  fill: "#0F4C5C",
+  font: { bold: true, color: "#FFFFFF", size: 14 },
+  horizontalAlignment: "center",
+};
+criteria.getRange("A3:C3").values = [["Valor", "Impacto", "Probabilidad"]];
+criteria.getRange("A3:C3").format = {
+  fill: "#E8EEF5",
+  font: { bold: true, color: "#0B2545" },
+  borders: { preset: "all", style: "thin", color: "#C8D1DC" },
+};
+criteria.getRange("A4:C8").values = [
+  [1, "Impacto muy bajo: efecto menor o fácilmente recuperable.", "Muy improbable: requiere condiciones poco realistas."],
+  [2, "Impacto bajo: afecta parcialmente una función.", "Poco probable: podría ocurrir, pero no es habitual."],
+  [3, "Impacto medio: afecta datos o disponibilidad de forma limitada.", "Probable: puede ocurrir durante el uso normal o con pruebas básicas."],
+  [4, "Impacto alto: compromete funciones importantes del sistema.", "Muy probable: puede repetirse con facilidad."],
+  [5, "Impacto crítico: compromete acceso, datos sensibles o continuidad.", "Casi seguro: se explota con pasos simples o credenciales conocidas."],
+];
+criteria.getRange("A4:C8").format = {
+  wrapText: true,
+  verticalAlignment: "top",
+  borders: { preset: "all", style: "thin", color: "#D9E2EC" },
+};
+criteria.getRange("A:C").format.font = { name: "Calibri", size: 11 };
+criteria.getRange("A:A").format.columnWidth = 12;
+criteria.getRange("B:C").format.columnWidth = 48;
 
 const sources = workbook.worksheets.add("Fuentes");
 sources.showGridLines = false;
