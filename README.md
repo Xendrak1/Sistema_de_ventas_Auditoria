@@ -9,8 +9,11 @@ Aplicacion web sencilla desarrollada con Python y Flask para un proyecto academi
 - Inicio de sesion.
 - Panel principal con metricas.
 - Registro y listado de productos.
+- Productos con SKU, categoria, stock e imagen local.
 - Registro y listado de clientes.
 - Registro y listado de ventas.
+- Reportes basicos de ventas e inventario.
+- Alertas visuales de bajo stock.
 - Busqueda de productos.
 
 ## Credenciales de prueba
@@ -92,6 +95,7 @@ nmap -p- IP_DEL_SERVIDOR
 ├── app.py
 ├── requirements.txt
 ├── static/
+│   ├── img/
 │   └── styles.css
 ├── templates/
 └── VULNERABILIDADES.md

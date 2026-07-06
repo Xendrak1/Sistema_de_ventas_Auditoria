@@ -41,10 +41,13 @@ def init_db():
 
         CREATE TABLE IF NOT EXISTS productos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            sku TEXT,
+            categoria TEXT,
             nombre TEXT NOT NULL,
             descripcion TEXT NOT NULL,
             precio REAL NOT NULL,
-            stock INTEGER NOT NULL
+            stock INTEGER NOT NULL,
+            imagen TEXT
         );
 
         CREATE TABLE IF NOT EXISTS clientes (
@@ -66,6 +69,7 @@ def init_db():
         );
         """
     )
+    ensure_product_columns(db)
 
     user_count = db.execute("SELECT COUNT(*) AS total FROM usuarios").fetchone()["total"]
     if user_count == 0:
@@ -81,13 +85,21 @@ def init_db():
     product_count = db.execute("SELECT COUNT(*) AS total FROM productos").fetchone()["total"]
     if product_count == 0:
         db.executemany(
-            "INSERT INTO productos (nombre, descripcion, precio, stock) VALUES (?, ?, ?, ?)",
+            """
+            INSERT INTO productos (sku, categoria, nombre, descripcion, precio, stock, imagen)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
             [
-                ("Laptop oficina", "Equipo para facturacion y reportes.", 4200, 8),
-                ("Impresora termica", "Impresora para comprobantes de venta.", 850, 12),
-                ("Lector codigo barras", "Lector USB para punto de venta.", 320, 20),
+                ("TEC-001", "Computacion", "Laptop oficina", "Equipo para facturacion, reportes y administracion.", 4200, 8, "img/laptop.png"),
+                ("POS-002", "Punto de venta", "Impresora termica", "Impresora para comprobantes y tickets de venta.", 850, 12, "img/impresora-termica.png"),
+                ("POS-003", "Inventario", "Lector codigo barras", "Lector USB para control de inventario y caja.", 320, 20, "img/scanner-barras.png"),
+                ("POS-004", "Caja", "Cajon de dinero", "Cajon metalico para efectivo y monedas.", 690, 5, "img/cajon-dinero.png"),
+                ("POS-005", "Punto de venta", "Monitor tactil POS", "Pantalla tactil compacta para mostrador.", 1850, 4, "img/monitor-pos.png"),
+                ("POS-006", "Pagos", "Terminal de pago", "Equipo inalambrico para pagos con tarjeta.", 1150, 7, "img/terminal-pago.png"),
             ],
         )
+    else:
+        refresh_sample_products(db)
 
     client_count = db.execute("SELECT COUNT(*) AS total FROM clientes").fetchone()["total"]
     if client_count == 0:
@@ -99,6 +111,47 @@ def init_db():
             ],
         )
     db.commit()
+
+
+def ensure_product_columns(db):
+    columns = [row["name"] for row in db.execute("PRAGMA table_info(productos)").fetchall()]
+    migrations = {
+        "sku": "ALTER TABLE productos ADD COLUMN sku TEXT",
+        "categoria": "ALTER TABLE productos ADD COLUMN categoria TEXT",
+        "imagen": "ALTER TABLE productos ADD COLUMN imagen TEXT",
+    }
+    for column, statement in migrations.items():
+        if column not in columns:
+            db.execute(statement)
+
+
+def refresh_sample_products(db):
+    updates = [
+        ("TEC-001", "Computacion", "img/laptop.png", "Laptop oficina"),
+        ("POS-002", "Punto de venta", "img/impresora-termica.png", "Impresora termica"),
+        ("POS-003", "Inventario", "img/scanner-barras.png", "Lector codigo barras"),
+    ]
+    for sku, categoria, imagen, nombre in updates:
+        db.execute(
+            "UPDATE productos SET sku = COALESCE(sku, ?), categoria = COALESCE(categoria, ?), imagen = COALESCE(imagen, ?) WHERE nombre = ?",
+            (sku, categoria, imagen, nombre),
+        )
+
+    extra_products = [
+        ("POS-004", "Caja", "Cajon de dinero", "Cajon metalico para efectivo y monedas.", 690, 5, "img/cajon-dinero.png"),
+        ("POS-005", "Punto de venta", "Monitor tactil POS", "Pantalla tactil compacta para mostrador.", 1850, 4, "img/monitor-pos.png"),
+        ("POS-006", "Pagos", "Terminal de pago", "Equipo inalambrico para pagos con tarjeta.", 1150, 7, "img/terminal-pago.png"),
+    ]
+    for product in extra_products:
+        exists = db.execute("SELECT id FROM productos WHERE sku = ?", (product[0],)).fetchone()
+        if not exists:
+            db.execute(
+                """
+                INSERT INTO productos (sku, categoria, nombre, descripcion, precio, stock, imagen)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                product,
+            )
 
 
 @app.before_request
@@ -171,7 +224,15 @@ def dashboard():
         LIMIT 5
         """
     ).fetchall()
-    return render_template("dashboard.html", stats=stats, ventas=ultimas_ventas)
+    bajo_stock = db.execute("SELECT * FROM productos WHERE stock <= 5 ORDER BY stock ASC").fetchall()
+    destacados = db.execute("SELECT * FROM productos ORDER BY id DESC LIMIT 3").fetchall()
+    return render_template(
+        "dashboard.html",
+        stats=stats,
+        ventas=ultimas_ventas,
+        bajo_stock=bajo_stock,
+        destacados=destacados,
+    )
 
 
 @app.route("/productos")
@@ -192,10 +253,13 @@ def nuevo_producto():
         descripcion = request.form.get("descripcion", "")
         precio = request.form.get("precio", "0")
         stock = request.form.get("stock", "0")
+        sku = request.form.get("sku", "")
+        categoria = request.form.get("categoria", "")
+        imagen = request.form.get("imagen", "")
 
         get_db().execute(
-            "INSERT INTO productos (nombre, descripcion, precio, stock) VALUES (?, ?, ?, ?)",
-            (nombre, descripcion, precio, stock),
+            "INSERT INTO productos (sku, categoria, nombre, descripcion, precio, stock, imagen) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (sku, categoria, nombre, descripcion, precio, stock, imagen),
         )
         get_db().commit()
         return redirect(url_for("productos"))
@@ -265,6 +329,26 @@ def ventas():
     )
 
 
+@app.route("/reportes")
+def reportes():
+    if not login_required():
+        return redirect(url_for("login"))
+
+    db = get_db()
+    ventas_por_producto = db.execute(
+        """
+        SELECT p.nombre, p.categoria, COALESCE(SUM(v.cantidad), 0) AS unidades,
+               COALESCE(SUM(v.total), 0) AS total
+        FROM productos p
+        LEFT JOIN ventas v ON v.producto_id = p.id
+        GROUP BY p.id
+        ORDER BY total DESC, p.nombre
+        """
+    ).fetchall()
+    inventario = db.execute("SELECT * FROM productos ORDER BY stock ASC").fetchall()
+    return render_template("reportes.html", ventas_por_producto=ventas_por_producto, inventario=inventario)
+
+
 @app.route("/buscar")
 def buscar():
     if not login_required():
@@ -291,13 +375,15 @@ def buscar():
     <div class="table-wrap">
       <table>
         <thead>
-          <tr><th>ID</th><th>Nombre</th><th>Descripcion</th><th>Precio</th><th>Stock</th></tr>
+          <tr><th>ID</th><th>SKU</th><th>Nombre</th><th>Categoria</th><th>Descripcion</th><th>Precio</th><th>Stock</th></tr>
         </thead>
         <tbody>
         {% for producto in productos %}
           <tr>
             <td>{{ producto.id }}</td>
+            <td>{{ producto.sku }}</td>
             <td>{{ producto.nombre }}</td>
+            <td>{{ producto.categoria }}</td>
             <td>{{ producto.descripcion|safe }}</td>
             <td>{{ "%.2f"|format(producto.precio) }}</td>
             <td>{{ producto.stock }}</td>

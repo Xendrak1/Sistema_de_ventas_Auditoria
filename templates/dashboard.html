@@ -9,10 +9,42 @@
 </section>
 
 <section class="metrics">
-  <article><span>Productos</span><strong>{{ stats.productos }}</strong></article>
-  <article><span>Clientes</span><strong>{{ stats.clientes }}</strong></article>
-  <article><span>Ventas</span><strong>{{ stats.ventas }}</strong></article>
-  <article><span>Ingresos</span><strong>Bs {{ "%.2f"|format(stats.ingresos) }}</strong></article>
+  <article><span>Productos activos</span><strong>{{ stats.productos }}</strong></article>
+  <article><span>Clientes registrados</span><strong>{{ stats.clientes }}</strong></article>
+  <article><span>Ventas emitidas</span><strong>{{ stats.ventas }}</strong></article>
+  <article><span>Ingresos acumulados</span><strong>Bs {{ "%.2f"|format(stats.ingresos) }}</strong></article>
+</section>
+
+<section class="split-layout">
+  <div>
+    <h2>Productos destacados</h2>
+    <div class="product-grid compact">
+      {% for producto in destacados %}
+        <article class="product-card">
+          <img src="{{ url_for('static', filename=producto.imagen or 'img/laptop.png') }}" alt="{{ producto.nombre }}">
+          <div>
+            <span class="pill">{{ producto.categoria or "General" }}</span>
+            <h3>{{ producto.nombre }}</h3>
+            <p>{{ producto.descripcion|safe }}</p>
+            <strong>Bs {{ "%.2f"|format(producto.precio) }}</strong>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+  <div>
+    <h2>Alertas de inventario</h2>
+    <div class="alert-list">
+      {% for producto in bajo_stock %}
+        <div class="alert-row">
+          <span>{{ producto.nombre }}</span>
+          <strong>{{ producto.stock }} unidades</strong>
+        </div>
+      {% else %}
+        <div class="alert-row"><span>Inventario estable</span><strong>OK</strong></div>
+      {% endfor %}
+    </div>
+  </div>
 </section>
 
 <section>

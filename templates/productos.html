@@ -5,15 +5,38 @@
   <a class="button" href="{{ url_for('nuevo_producto') }}">Nuevo producto</a>
 </section>
 
+<section class="product-grid">
+  {% for producto in productos %}
+    <article class="product-card">
+      <img src="{{ url_for('static', filename=producto.imagen or 'img/laptop.png') }}" alt="{{ producto.nombre }}">
+      <div class="product-body">
+        <div class="product-head">
+          <span class="pill">{{ producto.categoria or "General" }}</span>
+          <small>{{ producto.sku or "SIN-SKU" }}</small>
+        </div>
+        <h2>{{ producto.nombre }}</h2>
+        <p>{{ producto.descripcion|safe }}</p>
+        <div class="product-foot">
+          <strong>Bs {{ "%.2f"|format(producto.precio) }}</strong>
+          <span class="{% if producto.stock <= 5 %}stock low{% else %}stock{% endif %}">{{ producto.stock }} disp.</span>
+        </div>
+      </div>
+    </article>
+  {% endfor %}
+</section>
+
+<h2>Inventario detallado</h2>
 <div class="table-wrap">
   <table>
     <thead>
-      <tr><th>ID</th><th>Nombre</th><th>Descripcion</th><th>Precio</th><th>Stock</th></tr>
+      <tr><th>ID</th><th>SKU</th><th>Categoria</th><th>Nombre</th><th>Descripcion</th><th>Precio</th><th>Stock</th></tr>
     </thead>
     <tbody>
     {% for producto in productos %}
       <tr>
         <td>{{ producto.id }}</td>
+        <td>{{ producto.sku or "-" }}</td>
+        <td>{{ producto.categoria or "-" }}</td>
         <td>{{ producto.nombre }}</td>
         <td>{{ producto.descripcion|safe }}</td>
         <td>Bs {{ "%.2f"|format(producto.precio) }}</td>

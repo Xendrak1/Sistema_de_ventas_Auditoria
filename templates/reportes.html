@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="toolbar">
+  <h1>Reportes</h1>
+  <form action="{{ url_for('buscar') }}" method="get" class="inline-form">
+    <input name="q" placeholder="Buscar producto para auditoria">
+    <button type="submit">Buscar</button>
+  </form>
+</section>
+
+<section class="split-layout">
+  <div>
+    <h2>Ventas por producto</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Producto</th><th>Categoria</th><th>Unidades</th><th>Total</th></tr>
+        </thead>
+        <tbody>
+          {% for item in ventas_por_producto %}
+            <tr>
+              <td>{{ item.nombre }}</td>
+              <td>{{ item.categoria or "-" }}</td>
+              <td>{{ item.unidades }}</td>
+              <td>Bs {{ "%.2f"|format(item.total) }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div>
+    <h2>Control de stock</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>SKU</th><th>Producto</th><th>Stock</th><th>Estado</th></tr>
+        </thead>
+        <tbody>
+          {% for producto in inventario %}
+            <tr>
+              <td>{{ producto.sku or "-" }}</td>
+              <td>{{ producto.nombre }}</td>
+              <td>{{ producto.stock }}</td>
+              <td>{% if producto.stock <= 5 %}<span class="stock low">Bajo</span>{% else %}<span class="stock">Normal</span>{% endif %}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

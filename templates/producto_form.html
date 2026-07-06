@@ -5,6 +5,10 @@
 </section>
 
 <form method="post" class="form-grid">
+  <label>SKU</label>
+  <input name="sku" placeholder="POS-007">
+  <label>Categoria</label>
+  <input name="categoria" placeholder="Punto de venta">
   <label>Nombre</label>
   <input name="nombre" required>
   <label>Descripcion</label>
@@ -13,6 +17,15 @@
   <input name="precio" type="number" step="0.01" min="0" required>
   <label>Stock</label>
   <input name="stock" type="number" min="0" required>
+  <label>Imagen</label>
+  <select name="imagen">
+    <option value="img/laptop.png">Laptop</option>
+    <option value="img/impresora-termica.png">Impresora termica</option>
+    <option value="img/scanner-barras.png">Scanner de barras</option>
+    <option value="img/cajon-dinero.png">Cajon de dinero</option>
+    <option value="img/monitor-pos.png">Monitor POS</option>
+    <option value="img/terminal-pago.png">Terminal de pago</option>
+  </select>
   <button type="submit">Guardar</button>
 </form>
 {% endblock %}
