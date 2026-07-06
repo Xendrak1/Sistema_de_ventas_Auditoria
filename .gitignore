@@ -8,3 +8,6 @@ documentacion/node_modules/
 documentacion/entregables/*preview.png
 documentacion/entregables/*.inspect.ndjson
 documentacion/entregables/render_*/
+documentacion/entregables/*.lnk
+documentacion/evidencias_docx/contact_sheet.png
+documentacion/tmp_docx_extract/
