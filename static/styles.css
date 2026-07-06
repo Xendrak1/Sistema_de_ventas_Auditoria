@@ -308,6 +308,27 @@ button:hover,
   background: var(--primary-dark);
 }
 
+.delete-form {
+  margin-top: 12px;
+}
+
+.table-action-form {
+  margin: 0;
+}
+
+.danger-button {
+  background: var(--danger);
+}
+
+.danger-button:hover {
+  background: #7a1b13;
+}
+
+.danger-button.small {
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
 .inline-form {
   display: flex;
   gap: 8px;

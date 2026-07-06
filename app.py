@@ -267,6 +267,16 @@ def nuevo_producto():
     return render_template("producto_form.html")
 
 
+@app.route("/productos/<int:producto_id>/eliminar", methods=["POST"])
+def eliminar_producto(producto_id):
+    if not login_required():
+        return redirect(url_for("login"))
+
+    get_db().execute("DELETE FROM productos WHERE id = ?", (producto_id,))
+    get_db().commit()
+    return redirect(url_for("productos"))
+
+
 @app.route("/clientes", methods=["GET", "POST"])
 def clientes():
     if not login_required():

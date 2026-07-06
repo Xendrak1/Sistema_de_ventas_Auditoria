@@ -20,6 +20,9 @@
           <strong>Bs {{ "%.2f"|format(producto.precio) }}</strong>
           <span class="{% if producto.stock <= 5 %}stock low{% else %}stock{% endif %}">{{ producto.stock }} disp.</span>
         </div>
+        <form action="{{ url_for('eliminar_producto', producto_id=producto.id) }}" method="post" class="delete-form">
+          <button type="submit" class="danger-button" onclick="return confirm('¿Eliminar este producto?')">Eliminar</button>
+        </form>
       </div>
     </article>
   {% endfor %}
@@ -29,7 +32,7 @@
 <div class="table-wrap">
   <table>
     <thead>
-      <tr><th>ID</th><th>SKU</th><th>Categoria</th><th>Nombre</th><th>Descripcion</th><th>Precio</th><th>Stock</th></tr>
+      <tr><th>ID</th><th>SKU</th><th>Categoria</th><th>Nombre</th><th>Descripcion</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr>
     </thead>
     <tbody>
     {% for producto in productos %}
@@ -41,6 +44,11 @@
         <td>{{ producto.descripcion|safe }}</td>
         <td>Bs {{ "%.2f"|format(producto.precio) }}</td>
         <td>{{ producto.stock }}</td>
+        <td>
+          <form action="{{ url_for('eliminar_producto', producto_id=producto.id) }}" method="post" class="table-action-form">
+            <button type="submit" class="danger-button small" onclick="return confirm('¿Eliminar este producto?')">Eliminar</button>
+          </form>
+        </td>
       </tr>
     {% endfor %}
     </tbody>
