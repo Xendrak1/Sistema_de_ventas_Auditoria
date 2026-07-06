@@ -4,6 +4,7 @@ __pycache__/
 ventas.db
 .env
 .DS_Store
+documentacion/
 documentacion/node_modules/
 documentacion/entregables/*preview.png
 documentacion/entregables/*.inspect.ndjson
