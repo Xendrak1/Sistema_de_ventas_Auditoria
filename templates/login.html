@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ingreso - Sistema de Ventas</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="login-page">
+  <main class="login-box">
+    <h1>Sistema de Ventas</h1>
+    <p>Acceso administrativo</p>
+    {% if error %}
+      <div class="alert">{{ error }}</div>
+    {% endif %}
+    <form method="post">
+      <label>Usuario</label>
+      <input name="usuario" placeholder="admin" autofocus>
+      <label>Contrasena</label>
+      <input name="password" type="password" placeholder="admin123">
+      <button type="submit">Ingresar</button>
+    </form>
+    <small>Usuario de prueba: admin / admin123</small>
+  </main>
+</body>
+</html>

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="toolbar">
+  <h1>Panel principal</h1>
+  <form action="{{ url_for('buscar') }}" method="get" class="inline-form">
+    <input name="q" placeholder="Buscar producto">
+    <button type="submit">Buscar</button>
+  </form>
+</section>
+
+<section class="metrics">
+  <article><span>Productos</span><strong>{{ stats.productos }}</strong></article>
+  <article><span>Clientes</span><strong>{{ stats.clientes }}</strong></article>
+  <article><span>Ventas</span><strong>{{ stats.ventas }}</strong></article>
+  <article><span>Ingresos</span><strong>Bs {{ "%.2f"|format(stats.ingresos) }}</strong></article>
+</section>
+
+<section>
+  <h2>Ultimas ventas</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>ID</th><th>Cliente</th><th>Producto</th><th>Cantidad</th><th>Total</th><th>Fecha</th></tr>
+      </thead>
+      <tbody>
+      {% for venta in ventas %}
+        <tr>
+          <td>{{ venta.id }}</td>
+          <td>{{ venta.cliente }}</td>
+          <td>{{ venta.producto }}</td>
+          <td>{{ venta.cantidad }}</td>
+          <td>Bs {{ "%.2f"|format(venta.total) }}</td>
+          <td>{{ venta.fecha }}</td>
+        </tr>
+      {% else %}
+        <tr><td colspan="6">Sin ventas registradas</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

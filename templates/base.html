@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sistema de Ventas</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">Ventas</div>
+    <nav>
+      <a href="{{ url_for('dashboard') }}">Panel</a>
+      <a href="{{ url_for('productos') }}">Productos</a>
+      <a href="{{ url_for('clientes') }}">Clientes</a>
+      <a href="{{ url_for('ventas') }}">Ventas</a>
+      <a href="{{ url_for('buscar') }}">Buscar</a>
+    </nav>
+    <div class="session">
+      <span>{{ session.get("usuario", "") }}</span>
+      <small>{{ session.get("rol", "") }}</small>
+      <a href="{{ url_for('logout') }}">Salir</a>
+    </div>
+  </aside>
+  <main class="content">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>
